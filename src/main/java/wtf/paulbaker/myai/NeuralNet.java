@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
+
 /**
  * Created by paul.baker on 6/8/17.
  */
@@ -16,6 +18,10 @@ public class NeuralNet {
     private List<NeuralLayer> hiddenLayers;
 
     private List<Double> inputs, outputs;
+
+    public NeuralNet(int inputCount, int outputCount, Function<Double, Double> outputActivationFunction) {
+        this(inputCount, outputCount, emptyList(), emptyList(), outputActivationFunction);
+    }
 
     public NeuralNet(int inputCount, int outputCount,
                      List<Integer> hiddenNeuronCounts, List<Function<Double, Double>> hiddenNeuronActivationFunctions,

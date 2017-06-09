@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static wtf.paulbaker.myai.math.ActivationFunctions.Sigmoid;
 
 /**
@@ -28,10 +29,32 @@ public class FirstAITest {
 
         double[] inputs = {1.5, 0.5};
         neuralNet.setInputs(inputs);
-
         neuralNet.calculate();
         List<Double> outputs = neuralNet.getOutputs();
+        assertEquals(0.44921607391601426, outputs.get(0).doubleValue());
 
-        System.out.println(outputs);
+        inputs = new double[]{1, 2.1};
+        neuralNet.setInputs(inputs);
+        neuralNet.calculate();
+        outputs = neuralNet.getOutputs();
+        assertEquals(0.4722421543930707, outputs.get(0).doubleValue());
+    }
+
+    @Test
+    public void testSingleLayer() {
+        RandomSingletonProvider.setRandomSeed(0);
+
+        int inputCount = 2, outputCount = 1;
+        List<Integer> hiddenLayerCounts = Arrays.asList(3);
+        List<Function<Double, Double>> activationFunctions = Arrays.asList(Sigmoid(1.0d));
+        Function<Double, Double> outputFunction = ActivationFunctions.Linear(1d);
+
+        NeuralNet neuralNet = new NeuralNet(inputCount, outputCount, outputFunction);
+
+        double[] inputs = {1.5, 0.5};
+        neuralNet.setInputs(inputs);
+        neuralNet.calculate();
+        List<Double> outputs = neuralNet.getOutputs();
+        assertEquals(1.1373519143541104, outputs.get(0).doubleValue());
     }
 }
