@@ -1,4 +1,7 @@
-package wtf.paulbaker.myai;
+package wtf.paulbaker.myai.impl;
+
+import wtf.paulbaker.myai.NeuralLayer;
+import wtf.paulbaker.myai.NeuralNet;
 
 import java.util.List;
 import java.util.Optional;

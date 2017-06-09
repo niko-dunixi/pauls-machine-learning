@@ -1,6 +1,7 @@
 package wtf.paulbaker.myai;
 
 import org.junit.jupiter.api.Test;
+import wtf.paulbaker.myai.impl.DefaultNeuralNet;
 import wtf.paulbaker.myai.math.ActivationFunctions;
 import wtf.paulbaker.myai.math.RandomSingletonProvider;
 

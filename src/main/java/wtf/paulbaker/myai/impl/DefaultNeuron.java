@@ -1,6 +1,7 @@
-package wtf.paulbaker.myai;
+package wtf.paulbaker.myai.impl;
 
 import lombok.NonNull;
+import wtf.paulbaker.myai.Neuron;
 import wtf.paulbaker.myai.math.RandomSingletonProvider;
 
 import java.util.Random;
