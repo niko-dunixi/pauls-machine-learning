@@ -16,8 +16,6 @@ public class DefaultNeuralNet implements NeuralNet {
 
     private NeuralLayer inputLayer, outputLayer;
 
-    private NeuralLayer[] hiddenLayers;
-
     private double[] inputs, outputs;
 
     public DefaultNeuralNet(int inputCount, int outputCount, Function<Double, Double> outputActivationFunction) {
@@ -33,55 +31,44 @@ public class DefaultNeuralNet implements NeuralNet {
 
         buildInputLayer(inputCount);
 
-        buildHiddenLayers(hiddenNeuronCounts, hiddenNeuronActivationFunctions);
+        NeuralLayer tail = buildHiddenLayers(hiddenNeuronCounts, hiddenNeuronActivationFunctions);
 
-        buildOutputLayer(outputCount, outputActivationFunction);
+        outputLayer = buildOutputLayer(tail, outputCount, outputActivationFunction);
     }
 
     private void buildInputLayer(int inputCount) {
         inputLayer = new DefaultNeuralLayer(inputCount, inputCount, Function.identity());
     }
 
-    private void buildHiddenLayers(List<Integer> hiddenNeuronCounts, List<Function<Double, Double>> hiddenNeuronActivationFunctions) {
+    private NeuralLayer buildHiddenLayers(List<Integer> hiddenNeuronCounts, List<Function<Double, Double>> hiddenNeuronActivationFunctions) {
         if (hiddenNeuronCounts.size() != hiddenNeuronActivationFunctions.size()) {
             throw new IllegalArgumentException("Need to have the same size for hidden neurons and activation functions.");
         }
 
         int hiddenNeuronCount = hiddenNeuronCounts.size();
-        hiddenLayers = new NeuralLayer[hiddenNeuronCount];
+
+        NeuralLayer tail = inputLayer;
 
         for (int i = 0; i < hiddenNeuronCount; i++) {
             int currentNeuronCount = hiddenNeuronCounts.get(i);
             Function<Double, Double> currentFunction = hiddenNeuronActivationFunctions.get(i);
 
-            NeuralLayer previousLayer;
-            if (i == 0) {
-                previousLayer = inputLayer;
-            } else {
-                previousLayer = hiddenLayers[i - 1];
-            }
+            int outputCount = tail.getNeuronCount();
+            NeuralLayer currentLayer = new DefaultNeuralLayer(currentNeuronCount, outputCount, currentFunction);
+            currentLayer.setPreviousLayer(tail);
+            tail.setNextLayer(currentLayer);
 
-            int previousNeuronCount = previousLayer.getNeuronCount();
-
-            DefaultNeuralLayer currentLayer = new DefaultNeuralLayer(currentNeuronCount, previousNeuronCount, currentFunction);
-            previousLayer.setNextLayer(currentLayer);
-            currentLayer.setPreviousLayer(previousLayer);
-
-            hiddenLayers[i] = currentLayer;
+            tail = currentLayer;
         }
+
+        return tail;
     }
 
-    private void buildOutputLayer(int outputCount, Function<Double, Double> outputActivationFunction) {
-        NeuralLayer secondToLastLayer;
-        if (hiddenLayers.length == 0) {
-            secondToLastLayer = inputLayer;
-        } else {
-            secondToLastLayer = hiddenLayers[hiddenLayers.length - 1];
-        }
-
-        outputLayer = new DefaultNeuralLayer(outputCount, secondToLastLayer.getNeuronCount(), outputActivationFunction);
-        outputLayer.setPreviousLayer(secondToLastLayer);
-        secondToLastLayer.setNextLayer(outputLayer);
+    private NeuralLayer buildOutputLayer(NeuralLayer previousLayer, int outputCount, Function<Double, Double> outputActivationFunction) {
+        NeuralLayer outputLayer = new DefaultNeuralLayer(outputCount, previousLayer.getNeuronCount(), outputActivationFunction);
+        outputLayer.setPreviousLayer(previousLayer);
+        previousLayer.setNextLayer(outputLayer);
+        return outputLayer;
     }
 
     @Override
