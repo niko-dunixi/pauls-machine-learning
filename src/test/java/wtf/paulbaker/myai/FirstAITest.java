@@ -25,7 +25,7 @@ public class FirstAITest {
         List<Function<Double, Double>> activationFunctions = Arrays.asList(Sigmoid(1.0d));
         Function<Double, Double> outputFunction = ActivationFunctions.Linear(1d);
 
-        NeuralNet neuralNet = new NeuralNet(inputCount, outputCount, hiddenLayerCounts, activationFunctions, outputFunction);
+        NeuralNet neuralNet = new DefaultNeuralNet(inputCount, outputCount, hiddenLayerCounts, activationFunctions, outputFunction);
 
         double[] inputs = {1.5, 0.5};
         neuralNet.setInputs(inputs);
@@ -47,7 +47,7 @@ public class FirstAITest {
         int inputCount = 2, outputCount = 1;
         Function<Double, Double> outputFunction = ActivationFunctions.Linear(1d);
 
-        NeuralNet neuralNet = new NeuralNet(inputCount, outputCount, outputFunction);
+        NeuralNet neuralNet = new DefaultNeuralNet(inputCount, outputCount, outputFunction);
 
         double[] inputs = {1.5, 0.5};
         neuralNet.setInputs(inputs);

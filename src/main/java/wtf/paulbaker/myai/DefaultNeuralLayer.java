@@ -1,6 +1,5 @@
 package wtf.paulbaker.myai;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -37,7 +36,7 @@ public class DefaultNeuralLayer implements NeuralLayer {
         setInputs(new double[inputCount]);
 
         for (int i = 0; i < neuronCount; i++) {
-            neurons[i] = new Neuron(inputCount, activationFunction);
+            neurons[i] = new DefaultNeuron(inputCount, activationFunction);
             outputs[i] = 0;
         }
     }
