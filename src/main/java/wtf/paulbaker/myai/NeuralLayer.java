@@ -1,10 +1,7 @@
 package wtf.paulbaker.myai;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Created by paul.baker on 6/8/17.
@@ -19,18 +16,14 @@ public interface NeuralLayer extends Serializable {
 
     int getNeuronCount();
 
-    default void setInputs(double[] inputs) {
-        this.setInputs(Arrays.stream(inputs).boxed().collect(Collectors.toList()));
-    }
+    void setInputs(double[] inputs);
 
-    void setInputs(List<Double> inputs);
+    double[] getOutputs();
 
-    List<Double> getOutputs();
-
-    List<Neuron> getNeurons();
+    Neuron[] getNeurons();
 
     default Neuron getNeuron(int index) {
-        return getNeurons().get(index);
+        return getNeurons()[index];
     }
 
     Optional<NeuralLayer> getPreviousLayer();

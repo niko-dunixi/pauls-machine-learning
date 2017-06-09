@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static wtf.paulbaker.myai.ArrayUtil.emptyDoubleListOfSize;
-import static wtf.paulbaker.myai.ArrayUtil.emptyListOfSize;
-
 /**
  * Created by paul.baker on 6/8/17.
  */
@@ -14,9 +11,9 @@ public class DefaultNeuralLayer implements NeuralLayer {
 
     private final int neuronCount;
     private final int inputCount;
-    private final List<Double> inputs;
-    private final List<Double> outputs;
-    private final List<Neuron> neurons;
+    private final double[] inputs;
+    private final double[] outputs;
+    private final Neuron[] neurons;
     private final Function<Double, Double> activationFunction;
 
     private NeuralLayer previousLayer, nextLayer;
@@ -24,9 +21,9 @@ public class DefaultNeuralLayer implements NeuralLayer {
     public DefaultNeuralLayer(int neuronCount, int inputCount, Function<Double, Double> activationFunction) {
         this.neuronCount = neuronCount;
         this.inputCount = inputCount;
-        inputs = emptyDoubleListOfSize(inputCount);
-        outputs = emptyDoubleListOfSize(neuronCount);
-        neurons = emptyListOfSize(neuronCount);
+        inputs = new double[inputCount];
+        outputs = new double[neuronCount];
+        neurons = new Neuron[neuronCount];
         this.activationFunction = activationFunction;
 
         previousLayer = nextLayer = null;
@@ -40,19 +37,19 @@ public class DefaultNeuralLayer implements NeuralLayer {
         setInputs(new double[inputCount]);
 
         for (int i = 0; i < neuronCount; i++) {
-            neurons.set(i, new Neuron(inputCount, activationFunction));
-            outputs.set(i, 0d);
+            neurons[i] = new Neuron(inputCount, activationFunction);
+            outputs[i] = 0;
         }
     }
 
     @Override
     public void calculateOutput() {
         for (int i = 0; i < neuronCount; i++) {
-            Neuron currentNeuron = neurons.get(i);
+            Neuron currentNeuron = neurons[i];
             currentNeuron.setInputs(inputs);
             currentNeuron.calculateOutput();
             double currentOutput = currentNeuron.getCurrentOutput();
-            outputs.set(i, currentOutput);
+            outputs[i] = currentOutput;
         }
     }
 
@@ -63,26 +60,23 @@ public class DefaultNeuralLayer implements NeuralLayer {
     }
 
     @Override
-    public void setInputs(List<Double> inputs) {
-        if (inputs.size() != inputCount) {
+    public void setInputs(double[] inputs) {
+        if (inputs.length != this.inputs.length) {
             throw new IllegalArgumentException("Wrong number of inputs, should be " +
-                    inputCount + ". Not " + inputs.size());
+                    inputCount + ". Not " + inputs.length);
         }
-        for (int i = 0; i < inputs.size(); i++) {
-//            if (i < this.inputs.size())
-            this.inputs.set(i, inputs.get(i));
-//            else
-//                this.inputs.add(i, inputs.get(i));
+        for (int i = 0; i < inputs.length; i++) {
+            this.inputs[i] = inputs[i];
         }
     }
 
     @Override
-    public List<Double> getOutputs() {
+    public double[] getOutputs() {
         return outputs;
     }
 
     @Override
-    public List<Neuron> getNeurons() {
+    public Neuron[] getNeurons() {
         return neurons;
     }
 

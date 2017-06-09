@@ -1,11 +1,8 @@
 package wtf.paulbaker.myai;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 
@@ -16,9 +13,9 @@ public class NeuralNet {
 
     private NeuralLayer inputLayer, outputLayer;
 
-    private List<NeuralLayer> hiddenLayers;
+    private NeuralLayer[] hiddenLayers;
 
-    private List<Double> inputs, outputs;
+    private double[] inputs, outputs;
 
     public NeuralNet(int inputCount, int outputCount, Function<Double, Double> outputActivationFunction) {
         this(inputCount, outputCount, emptyList(), emptyList(), outputActivationFunction);
@@ -28,8 +25,8 @@ public class NeuralNet {
                      List<Integer> hiddenNeuronCounts, List<Function<Double, Double>> hiddenNeuronActivationFunctions,
                      Function<Double, Double> outputActivationFunction) {
 
-        inputs = Arrays.asList(new Double[inputCount]);
-        outputs = Arrays.asList(new Double[outputCount]);
+        inputs = new double[inputCount];
+        outputs = new double[outputCount];
 
         buildInputLayer(inputCount);
 
@@ -48,7 +45,7 @@ public class NeuralNet {
         }
 
         int hiddenNeuronCount = hiddenNeuronCounts.size();
-        hiddenLayers = new ArrayList<>(hiddenNeuronCount);
+        hiddenLayers = new NeuralLayer[hiddenNeuronCount];
 
         for (int i = 0; i < hiddenNeuronCount; i++) {
             int currentNeuronCount = hiddenNeuronCounts.get(i);
@@ -58,7 +55,7 @@ public class NeuralNet {
             if (i == 0) {
                 previousLayer = inputLayer;
             } else {
-                previousLayer = hiddenLayers.get(i - 1);
+                previousLayer = hiddenLayers[i - 1];
             }
 
             int previousNeuronCount = previousLayer.getNeuronCount();
@@ -67,16 +64,16 @@ public class NeuralNet {
             previousLayer.setNextLayer(currentLayer);
             currentLayer.setPreviousLayer(previousLayer);
 
-            hiddenLayers.add(currentLayer);
+            hiddenLayers[i] = currentLayer;
         }
     }
 
     private void buildOutputLayer(int outputCount, Function<Double, Double> outputActivationFunction) {
         NeuralLayer secondToLastLayer;
-        if (hiddenLayers.isEmpty()) {
+        if (hiddenLayers.length == 0) {
             secondToLastLayer = inputLayer;
         } else {
-            secondToLastLayer = hiddenLayers.get(hiddenLayers.size() - 1);
+            secondToLastLayer = hiddenLayers[hiddenLayers.length - 1];
         }
 
         outputLayer = new DefaultNeuralLayer(outputCount, secondToLastLayer.getNeuronCount(), outputActivationFunction);
@@ -85,33 +82,33 @@ public class NeuralNet {
     }
 
     public void setInputs(double[] inputs) {
-        this.setInputs(Arrays.stream(inputs).boxed().collect(Collectors.toList()));
-    }
-
-    public void setInputs(List<Double> values) {
-        if (values.size() != this.inputs.size()) {
+        if (inputs.length != this.inputs.length) {
             throw new IllegalArgumentException("Wrong number of inputs provided, should be "
-                    + this.inputs.size() + " but was " + values.size());
+                    + this.inputs.length + " but was " + inputs.length);
         }
 
-        for (int i = 0; i < values.size(); i++) {
-            this.inputs.set(i, values.get(i));
-        }
-    }
-
-    private void setOutputs(List<Double> outputs) {
-        for (int i = 0; i < outputs.size(); i++) {
-            this.outputs.set(i, outputs.get(i));
+        for (int i = 0; i < inputs.length; i++) {
+            this.inputs[i] = inputs[i];
         }
     }
 
-    public List<Double> getOutputs() {
+    private void setOutputs(double[] outputs) {
+        if (outputs.length != this.outputs.length) {
+            throw new IllegalArgumentException("Wrong number of inputs provided, should be "
+                    + this.outputs.length + " but was " + outputs.length);
+        }
+        for (int i = 0; i < outputs.length; i++) {
+            this.outputs[i] = outputs[i];
+        }
+    }
+
+    public double[] getOutputs() {
         return outputs;
     }
 
     public void calculate() {
         Optional<NeuralLayer> nextLayer = Optional.of(inputLayer);
-        List<Double> nextInputs = inputs;
+        double[] nextInputs = inputs;
 
         while (nextLayer.isPresent()) {
             NeuralLayer currentLayer = nextLayer.get();
@@ -121,6 +118,6 @@ public class NeuralNet {
             nextLayer = currentLayer.getNextLayer();
         }
 
-        outputs = nextInputs;
+        setOutputs(nextInputs);
     }
 }
