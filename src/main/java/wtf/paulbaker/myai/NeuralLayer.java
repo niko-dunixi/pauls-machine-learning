@@ -15,7 +15,7 @@ public interface NeuralLayer extends Serializable {
 
     void calculateOutput();
 
-    double getCurrentOutput();
+//    double getCurrentOutput();
 
     int getNeuronCount();
 

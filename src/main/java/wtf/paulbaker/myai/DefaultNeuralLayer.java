@@ -21,8 +21,6 @@ public class DefaultNeuralLayer implements NeuralLayer {
 
     private NeuralLayer previousLayer, nextLayer;
 
-    private double currentOutput;
-
     public DefaultNeuralLayer(int neuronCount, int inputCount, Function<Double, Double> activationFunction) {
         this.neuronCount = neuronCount;
         this.inputCount = inputCount;
@@ -38,7 +36,6 @@ public class DefaultNeuralLayer implements NeuralLayer {
 
     @Override
     public void initializeNeuralLayer() {
-        currentOutput = 0d;
 
         setInputs(new double[inputCount]);
 
@@ -59,10 +56,6 @@ public class DefaultNeuralLayer implements NeuralLayer {
         }
     }
 
-    @Override
-    public double getCurrentOutput() {
-        return currentOutput;
-    }
 
     @Override
     public int getNeuronCount() {
@@ -76,10 +69,10 @@ public class DefaultNeuralLayer implements NeuralLayer {
                     inputCount + ". Not " + inputs.size());
         }
         for (int i = 0; i < inputs.size(); i++) {
-            if (i < this.inputs.size())
-                this.inputs.set(i, inputs.get(i));
-            else
-                this.inputs.add(i, inputs.get(i));
+//            if (i < this.inputs.size())
+            this.inputs.set(i, inputs.get(i));
+//            else
+//                this.inputs.add(i, inputs.get(i));
         }
     }
 

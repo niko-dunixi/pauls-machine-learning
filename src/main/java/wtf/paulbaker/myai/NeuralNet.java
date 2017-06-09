@@ -3,6 +3,7 @@ package wtf.paulbaker.myai;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -108,23 +109,18 @@ public class NeuralNet {
         return outputs;
     }
 
-    @SuppressWarnings("ConstantConditions")
     public void calculate() {
-        inputLayer.setInputs(inputs);
-        for (int i = 0; i < hiddenLayers.size(); i++) {
-            NeuralLayer currentLayer = hiddenLayers.get(i);
+        Optional<NeuralLayer> nextLayer = Optional.of(inputLayer);
+        List<Double> nextInputs = inputs;
 
-            NeuralLayer previousLayer = currentLayer.getPreviousLayer().get();
-            previousLayer.calculateOutput();
-            List<Double> previousLayerOutputs = previousLayer.getOutputs();
-
-            currentLayer.setInputs(previousLayerOutputs);
+        while (nextLayer.isPresent()) {
+            NeuralLayer currentLayer = nextLayer.get();
+            currentLayer.setInputs(nextInputs);
+            currentLayer.calculateOutput();
+            nextInputs = currentLayer.getOutputs();
+            nextLayer = currentLayer.getNextLayer();
         }
 
-        NeuralLayer secondToLastLayer = outputLayer.getPreviousLayer().get();
-        secondToLastLayer.calculateOutput();
-        outputLayer.setInputs(secondToLastLayer.getOutputs());
-        outputLayer.calculateOutput();
-        setOutputs(outputLayer.getOutputs());
+        outputs = nextInputs;
     }
 }
