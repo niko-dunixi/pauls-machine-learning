@@ -5,10 +5,10 @@ import wtf.paulbaker.myai.impl.DefaultNeuralNet;
 import wtf.paulbaker.myai.math.ActivationFunctions;
 import wtf.paulbaker.myai.math.RandomSingletonProvider;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,25 +24,25 @@ public class NeuralNetTest {
         RandomSingletonProvider.setRandomSeed(0);
 
         int inputCount = 2, outputCount = 1;
-        List<Integer> hiddenLayerCounts = Arrays.asList(3);
-        List<Function<Double, Double>> activationFunctions = Arrays.asList(Sigmoid(1.0d));
+        List<Integer> hiddenLayerCounts = asList(3, 5);
+        List<Function<Double, Double>> activationFunctions = asList(Sigmoid(1.0d), Sigmoid(1.0d));
         Function<Double, Double> outputFunction = ActivationFunctions.Linear(1d);
 
         NeuralNet neuralNet = new DefaultNeuralNet(inputCount, outputCount, hiddenLayerCounts, activationFunctions, outputFunction);
 
-        assertThat(neuralNet.getHiddenLayerCount(), is(1));
+        assertThat(neuralNet.getHiddenLayerCount(), is(2));
 
         double[] inputs = {1.5, 0.5};
         neuralNet.setInputs(inputs);
         neuralNet.calculate();
         double[] outputs = neuralNet.getOutputs();
-        assertThat(outputs[0], is(0.44921607391601426));
+        assertThat(outputs[0], is(1.7720883618445207));
 
         inputs = new double[]{1, 2.1};
         neuralNet.setInputs(inputs);
         neuralNet.calculate();
         outputs = neuralNet.getOutputs();
-        assertThat(outputs[0], is(0.4722421543930707));
+        assertThat(outputs[0], is(1.7953157816231302));
     }
 
     @Test
