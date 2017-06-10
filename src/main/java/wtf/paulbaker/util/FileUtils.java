@@ -14,7 +14,7 @@ public class FileUtils {
     }
 
     public static File fromClassPath(String filepath) {
-        URL resource = FileUtils.class.getClassLoader().getResource("dataset/xor.csv");
+        URL resource = FileUtils.class.getClassLoader().getResource(filepath);
         try {
             if (resource == null) {
                 // Resource is null if the file doesn't exist.

@@ -36,6 +36,18 @@ public class DataSetTest {
     @Test
     public void testXORFailsToLoadWithoutLineSkip() throws IOException {
         File xorFile = FileUtils.fromClassPath("dataset/xor.csv");
-        assertThrows(NumberFormatException.class, () -> DataSet.fromCSVFile(xorFile, 2, false));
+        assertThrows(NumberFormatException.class, () -> DataSet.fromCSVFile(xorFile, 2));
+    }
+
+    @Test
+    public void testJaggedDataFails() throws IOException {
+        File jaggedFile = FileUtils.fromClassPath("test-dataset/invalid-jagged-data.csv");
+        assertThrows(IllegalArgumentException.class, () -> DataSet.fromCSVFile(jaggedFile, 3));
+    }
+
+    @Test
+    public void testBadPartitionIndex() throws IOException {
+        File xorFile = FileUtils.fromClassPath("dataset/xor.csv");
+        assertThrows(IllegalArgumentException.class, () -> DataSet.fromCSVFile(xorFile, 3, true));
     }
 }

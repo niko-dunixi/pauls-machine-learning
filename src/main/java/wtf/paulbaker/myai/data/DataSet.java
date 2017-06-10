@@ -18,33 +18,26 @@ public class DataSet {
         inputData = new double[sampleCount][];
         outputData = new double[sampleCount][];
 
-        int inputRowSize = 0;
-        int outputRowSize = 0;
+        int rowSize = 0;
 
         for (int rowIndex = 0; rowIndex < rawData.length; rowIndex++) {
             double[] currentRow = rawData[rowIndex];
-            double[] currentInput = Arrays.copyOfRange(currentRow, 0, partitionIndex);
-            double[] currentOutput = Arrays.copyOfRange(currentRow, partitionIndex, currentRow.length);
             // Minor validation
-            int currentInputRowSize = currentInput.length;
-            int currentOutputRowSize = currentOutput.length;
+            int currentRowSize = currentRow.length;
             if (rowIndex == 0) {
-                inputRowSize = currentInputRowSize;
-                outputRowSize = currentOutputRowSize;
-            } else if (inputRowSize != currentInputRowSize) {
-                throw new IllegalArgumentException("On row " + rowIndex + " we encountered a different size of inputs");
-            } else if (outputRowSize != currentOutputRowSize) {
-                throw new IllegalArgumentException("On row " + rowIndex + " we encountered a different size of outputs");
+                rowSize = currentRowSize;
+                if (partitionIndex >= rowSize) {
+                    throw new IllegalArgumentException("Bad partition index " + partitionIndex + ", where the size of the row is " + rowSize);
+                }
+            } else if (rowSize != currentRowSize) {
+                throw new IllegalArgumentException("On row " + rowIndex + " we encountered a jagged row size. All rows must be uniform length.");
             }
             // Store the data
+            double[] currentInput = Arrays.copyOfRange(currentRow, 0, partitionIndex);
+            double[] currentOutput = Arrays.copyOfRange(currentRow, partitionIndex, currentRow.length);
             inputData[rowIndex] = currentInput;
             outputData[rowIndex] = currentOutput;
         }
-    }
-
-    private DataSet(double[][] inputs, double[][] outputs) {
-        this.inputData = inputs;
-        this.outputData = outputs;
     }
 
     public double[] getInput(int rowIndex) {
