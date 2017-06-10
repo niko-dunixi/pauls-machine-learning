@@ -36,7 +36,6 @@ public class DataSetTest {
     @Test
     public void testXORFailsToLoadWithoutLineSkip() throws IOException {
         File xorFile = FileUtils.fromClassPath("dataset/xor.csv");
-
         assertThrows(NumberFormatException.class, () -> DataSet.fromCSVFile(xorFile, 2, false));
     }
 }
