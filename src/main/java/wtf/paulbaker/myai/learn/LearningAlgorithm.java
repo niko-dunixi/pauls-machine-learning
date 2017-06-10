@@ -1,6 +1,7 @@
 package wtf.paulbaker.myai.learn;
 
 import wtf.paulbaker.myai.NeuralNet;
+import wtf.paulbaker.myai.data.DataSet;
 
 import java.util.function.Supplier;
 
@@ -12,7 +13,7 @@ public abstract class LearningAlgorithm {
     private final Supplier<NeuralNet> neuralNetSupplier;
     private NeuralNet neuralNet;
 
-    public LearningAlgorithm(Supplier<NeuralNet> neuralNetSupplier) {
+    public LearningAlgorithm(Supplier<NeuralNet> neuralNetSupplier, Supplier<DataSet> dataSetSupplier) {
         this.neuralNetSupplier = neuralNetSupplier;
         initialize();
     }

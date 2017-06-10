@@ -18,6 +18,8 @@ public class DefaultNeuralNet implements NeuralNet {
 
     private double[] inputs, outputs;
 
+    private int hiddenLayerCount;
+
     public DefaultNeuralNet(int inputCount, int outputCount, Function<Double, Double> outputActivationFunction) {
         this(inputCount, outputCount, emptyList(), emptyList(), outputActivationFunction);
     }
@@ -45,11 +47,11 @@ public class DefaultNeuralNet implements NeuralNet {
             throw new IllegalArgumentException("Need to have the same size for hidden neurons and activation functions.");
         }
 
-        int hiddenNeuronCount = hiddenNeuronCounts.size();
+        this.hiddenLayerCount = hiddenNeuronCounts.size();
 
         NeuralLayer tail = inputLayer;
 
-        for (int i = 0; i < hiddenNeuronCount; i++) {
+        for (int i = 0; i < this.hiddenLayerCount; i++) {
             int currentNeuronCount = hiddenNeuronCounts.get(i);
             Function<Double, Double> currentFunction = hiddenNeuronActivationFunctions.get(i);
 
@@ -112,5 +114,10 @@ public class DefaultNeuralNet implements NeuralNet {
         }
 
         setOutputs(nextInputs);
+    }
+
+    @Override
+    public int getHiddenLayerCount() {
+        return hiddenLayerCount;
     }
 }

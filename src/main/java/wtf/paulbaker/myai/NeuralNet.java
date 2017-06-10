@@ -12,4 +12,10 @@ public interface NeuralNet extends Serializable {
     double[] getOutputs();
 
     void calculate();
+
+    int getHiddenLayerCount();
+
+    default boolean hasHiddenLayers() {
+        return getHiddenLayerCount() > 0;
+    }
 }

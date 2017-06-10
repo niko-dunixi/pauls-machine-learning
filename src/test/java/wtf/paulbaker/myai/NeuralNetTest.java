@@ -9,16 +9,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static wtf.paulbaker.myai.math.ActivationFunctions.Sigmoid;
 
 /**
  * Created by paul.baker on 6/8/17.
  */
-public class FirstAITest {
+public class NeuralNetTest {
 
     @Test
-    public void testItFirst() {
+    public void testFunctionalWithHiddenLayers() {
         RandomSingletonProvider.setRandomSeed(0);
 
         int inputCount = 2, outputCount = 1;
@@ -28,17 +30,19 @@ public class FirstAITest {
 
         NeuralNet neuralNet = new DefaultNeuralNet(inputCount, outputCount, hiddenLayerCounts, activationFunctions, outputFunction);
 
+        assertThat(neuralNet.getHiddenLayerCount(), is(1));
+
         double[] inputs = {1.5, 0.5};
         neuralNet.setInputs(inputs);
         neuralNet.calculate();
         double[] outputs = neuralNet.getOutputs();
-        assertEquals(0.44921607391601426, outputs[0]);
+        assertThat(outputs[0], is(0.44921607391601426));
 
         inputs = new double[]{1, 2.1};
         neuralNet.setInputs(inputs);
         neuralNet.calculate();
         outputs = neuralNet.getOutputs();
-        assertEquals(0.4722421543930707, outputs[0]);
+        assertThat(outputs[0], is(0.4722421543930707));
     }
 
     @Test
@@ -49,6 +53,8 @@ public class FirstAITest {
         Function<Double, Double> outputFunction = ActivationFunctions.Linear(1d);
 
         NeuralNet neuralNet = new DefaultNeuralNet(inputCount, outputCount, outputFunction);
+
+        assertThat(neuralNet.hasHiddenLayers(), is(false));
 
         double[] inputs = {1.5, 0.5};
         neuralNet.setInputs(inputs);
