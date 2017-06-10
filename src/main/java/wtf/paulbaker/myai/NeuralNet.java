@@ -18,4 +18,8 @@ public interface NeuralNet extends Serializable {
     default boolean hasHiddenLayers() {
         return getHiddenLayerCount() > 0;
     }
+
+    default boolean isSingleLayer() {
+        return !hasHiddenLayers();
+    }
 }
